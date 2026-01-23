@@ -22,6 +22,10 @@
 	3. Ejecute y revise la salida por pantalla. 
 	4. Cambie el incio con 'start()' por 'run()'. Cómo cambia la salida?, por qué?.
 
+	Al reemplazar start() por run(), la ejecución deja de ser concurrente.
+	Con start() los hilos se ejecutan en paralelo y la salida es no determinística, es decir sin seguir un orden especifico.
+	Con run() el código se ejecuta de manera secuencial en el hilo principal, produciendo una salida ordenada.
+
 **Parte II - Ejercicio Black List Search**
 
 
