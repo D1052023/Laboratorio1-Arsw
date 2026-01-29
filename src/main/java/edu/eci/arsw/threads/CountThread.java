@@ -5,22 +5,22 @@
  */
 package edu.eci.arsw.threads;
 
+import java.util.stream.IntStream;
+
+import lombok.AllArgsConstructor;
+
 /**
  *
  * @author hcadavid
  */
+@AllArgsConstructor
 public class CountThread extends Thread {
     private int A;
     private int B;
-    public CountThread(int A, int B){
-        this.A = A;
-        this.B = B;
-    }
     @Override
     public void run(){
-        for (int i = A; i <= B; i++) {
-            System.out.println("Hilo" + this.getName() + "->" + i);
-        
-        }
+        IntStream.range(A,B)
+            .forEach(i -> System.out.println(
+                Thread.currentThread().getName() + " : " + i));
     }
 }
