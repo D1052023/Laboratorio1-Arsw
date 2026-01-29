@@ -6,11 +6,11 @@
 package edu.eci.arsw.blacklistvalidator;
 
 import edu.eci.arsw.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
+import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 /**
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class HostBlackListsValidator {
 
-    private static final int BLACK_LIST_ALARM_COUNT=5;
+    public static final int BLACK_LIST_ALARM_COUNT = 5;
 
     private static final Logger LOG = Logger.getLogger(HostBlackListsValidator.class.getName());
     
@@ -46,6 +46,7 @@ public class HostBlackListsValidator {
         int start = 0;
 
         List<BlackListSearchThread> threads = new ArrayList<>();
+        AtomicInteger globalOccurrences = new AtomicInteger(0);
 
         for (int i = 0; i < N; i++) {
             int end = (i == N - 1)
@@ -53,7 +54,7 @@ public class HostBlackListsValidator {
                     : start + blockSize;
 
             BlackListSearchThread thread =
-                    new BlackListSearchThread(start, end, ipaddress);
+                    new BlackListSearchThread(start, end, ipaddress, globalOccurrences);
 
             threads.add(thread);
             start = end;

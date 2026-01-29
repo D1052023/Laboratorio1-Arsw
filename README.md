@@ -1,5 +1,6 @@
 
 ### Escuela Colombiana de Ingeniería
+### Oscar Andres Sanchez Porras
 ### Arquitecturas de Software - ARSW
 ## Ejercicio Introducción al paralelismo - Hilos - Caso BlackListSearch
 
@@ -64,6 +65,40 @@ Para 'refactorizar' este código, y hacer que explote la capacidad multi-núcleo
 **Parte II.I Para discutir la próxima clase (NO para implementar aún)**
 
 La estrategia de paralelismo antes implementada es ineficiente en ciertos casos, pues la búsqueda se sigue realizando aún cuando los N hilos (en su conjunto) ya hayan encontrado el número mínimo de ocurrencias requeridas para reportar al servidor como malicioso. Cómo se podría modificar la implementación para minimizar el número de consultas en estos casos?, qué elemento nuevo traería esto al problema?
+
+¿Por qué la estrategia actual es ineficiente?
+Porque aunque el sistema ya encontró 5 ocurrencias (el mínimo para marcar un host como no confiable):
+
+Todos los hilos siguen ejecutándose
+
+Se consultan las 80.000 listas, se hacen llamadas innecesarias a isInBlackListServer
+
+Esto es correcto funcionalmente, pero ineficiente en tiempo y recursos.
+
+¿Cómo se podría mejorar la implementación?
+La idea es detener la búsqueda cuando el total de ocurrencias encontradas por todos los hilos alcance el umbral.
+
+¿Qué elemento NUEVO introduce esto al problema?
+Sincronización entre hilos
+Antes:
+
+- Cada hilo era totalmente independiente
+
+- El problema era vergonzosamente paralelo
+
+Ahora:
+
+- Los hilos comparten estado
+
+- Deben coordinarse
+
+- Aparecen nuevos desafíos:
+
+- condiciones de carrera
+
+- visibilidad de memoria
+
+- consistencia de datos
 
 **Parte III - Evaluación de Desempeño**
 
