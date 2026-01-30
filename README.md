@@ -27,7 +27,7 @@
 	Con start() los hilos se ejecutan en paralelo y la salida es no determinística, es decir sin seguir un orden especifico.
 	Con run() el código se ejecuta de manera secuencial en el hilo principal, produciendo una salida ordenada.
 
-	![](img/codigo1.png)
+	![](img/Codigo1.png)
 
 	![](img/codigo2.png)
 
