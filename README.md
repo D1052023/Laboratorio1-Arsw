@@ -137,3 +137,48 @@ El mejor desempeño es cuando el número de hilos es cercano al número de núcl
 
 En esta caso casi no se ve reflejado debido a que se implemento que los hilos se terminen cuando encuentren 5 ocurrencias. Es decir no se dejan ejecutando los hilos sino se detienen.
 
+**Parte IV - Ejercicio Black List Search**
+
+1. Según la [ley de Amdahls](https://www.pugetsystems.com/labs/articles/Estimating-CPU-Performance-using-Amdahls-Law-619/#WhatisAmdahlsLaw?):
+
+	![](img/ahmdahls.png)
+	
+	Donde _S(n)_ es el mejoramiento teórico del desempeño, _P_ la fracción paralelizable del algoritmo, y _n_ el número de hilos, a mayor _n_, mayor debería ser dicha mejora. Por qué el mejor desempeño no se logra con los 500 hilos?, cómo se compara este desempeño cuando se usan 200?. 
+	Según la Ley de Amdahl, el speedup máximo que puede lograr un programa paralelo está limitado por la fracción del código que no puede paralelizarse. La ley se expresa como:
+
+S(n) = 1 / ((1 − P) + P / n)
+
+donde:
+- S(n) es el speedup teórico,
+- P es la fracción paralelizable del programa,
+- n es el número de hilos o núcleos.
+
+Aunque aumentar el numero de hilos reduce el tiempo de ejecucion de la parte paralela, la parte secuencial permanece constante y se convierte en cuello de botella. Por esta razon, agregar mas hilos produce rendimientos decrecientes.
+
+
+En el experimento, al usar 500 hilos no se obtiene el mejor desempeño debido al aumento del overhead asociado a la creacion, gestion y sincronizacion de hilos, así como al incremento de cambios de contexto y contencion por recursos compartidos. En comparacion, usar 200 hilos ofrece un mejor balance entre paralelismo y sobrecarga, acercándose más al limite teorico de mejora descrito por la Ley de Amdahl.
+
+Esto hace que más hilos no siempre indican un mejor rendimiento cuando existe una fraccion secuencial significativa.
+
+
+2. Cómo se comporta la solución usando tantos hilos de procesamiento como núcleos comparado con el resultado de usar el doble de éste?.
+
+Cuando se utilizan tantos hilos como núcleos disponibles, el sistema puede ejecutar cada hilo en un nucleo sin una competencia excesiva por los recursos del procesador. Esto suele producir el mejor rendimiento práctico.
+
+Al usar el doble de hilos que nucleos, los hilos deben turnarse para ejecutarse, lo que introduce mayor overhead por planificación del sistema operativo y cambios de contexto. Como consecuencia, el beneficio del paralelismo disminuye y, en algunos casos, el tiempo total de ejecución puede incluso aumentar.
+
+Este comportamiento concuerda con la Ley de Amdahl, ya que el beneficio marginal de agregar más hilos disminuye una vez que los recursos fisicos del sistema estan completamente utilizados.
+
+
+3. De acuerdo con lo anterior, si para este problema en lugar de 100 hilos en una sola CPU se pudiera usar 1 hilo en cada una de 100 máquinas hipotéticas, la ley de Amdahls se aplicaría mejor?. Si en lugar de esto se usaran c hilos en 100/c máquinas distribuidas (siendo c es el número de núcleos de dichas máquinas), se mejoraría?. Explique su respuesta.
+
+La Ley de Amdahl también se aplica a sistemas distribuidos. En este escenario, usar 1 hilo en cada una de 100 máquinas representa un paralelismo físico real, donde cada hilo se ejecuta en un procesador independiente sin competir por los mismos recursos locales.
+
+Esto permitiría que la parte paralelizable del algoritmo se ejecute de forma más cercana al límite teorico de speedup, reduciendo los problemas de contención presentes en una sola CPU con muchos hilos.
+
+Sin embargo, este enfoque introduce nuevos costos al problema, como la latencia de comunicación entre máquinas, la sincronización distribuida y la coordinacion de resultados. Estos factores pueden convertirse en nuevos cuellos de botella y limitar la mejora total del rendimiento.
+
+Por lo tanto, aunque el desempeño podría mejorar frente a usar muchos hilos en una sola CPU, la ganancia final dependerá del costo de comunicación y coordinación entre los nodos distribuidos.
+
+
+
