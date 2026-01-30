@@ -67,8 +67,8 @@ Para 'refactorizar' este código, y hacer que explote la capacidad multi-núcleo
 La estrategia de paralelismo antes implementada es ineficiente en ciertos casos, pues la búsqueda se sigue realizando aún cuando los N hilos (en su conjunto) ya hayan encontrado el número mínimo de ocurrencias requeridas para reportar al servidor como malicioso. Cómo se podría modificar la implementación para minimizar el número de consultas en estos casos?, qué elemento nuevo traería esto al problema?
 
 ¿Por qué la estrategia actual es ineficiente?
-Porque aunque el sistema ya encontró 5 ocurrencias (el mínimo para marcar un host como no confiable):
 
+Porque aunque el sistema ya encontró 5 ocurrencias.
 Todos los hilos siguen ejecutándose
 
 Se consultan las 80.000 listas, se hacen llamadas innecesarias a isInBlackListServer
@@ -76,6 +76,7 @@ Se consultan las 80.000 listas, se hacen llamadas innecesarias a isInBlackListSe
 Esto es correcto funcionalmente, pero ineficiente en tiempo y recursos.
 
 ¿Cómo se podría mejorar la implementación?
+
 La idea es detener la búsqueda cuando el total de ocurrencias encontradas por todos los hilos alcance el umbral.
 
 ¿Qué elemento NUEVO introduce esto al problema?
@@ -84,7 +85,7 @@ Antes:
 
 - Cada hilo era totalmente independiente
 
-- El problema era vergonzosamente paralelo
+- El problema era paralelo
 
 Ahora:
 
@@ -94,35 +95,45 @@ Ahora:
 
 - Aparecen nuevos desafíos:
 
-- condiciones de carrera
+	- condiciones de carrera
 
-- visibilidad de memoria
+	- visibilidad de memoria
 
-- consistencia de datos
+	- consistencia de datos
 
 **Parte III - Evaluación de Desempeño**
 
 A partir de lo anterior, implemente la siguiente secuencia de experimentos para realizar las validación de direcciones IP dispersas (por ejemplo 202.24.34.55), tomando los tiempos de ejecución de los mismos (asegúrese de hacerlos en la misma máquina):
 
+![](img/parametrosIniciales.png)
+
 1. Un solo hilo.
+![](img/experimento1.png)
+
+![](img/resultadoeExperimento1.png)
+
 2. Tantos hilos como núcleos de procesamiento (haga que el programa determine esto haciendo uso del [API Runtime](https://docs.oracle.com/javase/7/docs/api/java/lang/Runtime.html)).
+![](img/experimento2.png)
+
+![](img/resultadoExperimento2.png)
 3. Tantos hilos como el doble de núcleos de procesamiento.
+![](img/experimento3.png)
+
+![](img/resultadoExperimento3.png)
 4. 50 hilos.
+![](img/experimento4.png)
+
+ ![](img/resultadoExperimento4.png)
 5. 100 hilos.
+ ![](img/experimento5.png)
+
+ ![](img/resultadoExperimento5.png)
 
 Al iniciar el programa ejecute el monitor jVisualVM, y a medida que corran las pruebas, revise y anote el consumo de CPU y de memoria en cada caso. ![](img/jvisualvm.png)
 
 Con lo anterior, y con los tiempos de ejecución dados, haga una gráfica de tiempo de solución vs. número de hilos. Analice y plantee hipótesis con su compañero para las siguientes preguntas (puede tener en cuenta lo reportado por jVisualVM):
 
-**Parte IV - Ejercicio Black List Search**
+El mejor desempeño es cuando el número de hilos es cercano al número de núcleos del procesador. Aumentar el número de hilos más allá de este punto genera sobrecarga por planificación y sincronización, incrementando el tiempo total de ejecución y el consumo de recursos.
 
-1. Según la [ley de Amdahls](https://www.pugetsystems.com/labs/articles/Estimating-CPU-Performance-using-Amdahls-Law-619/#WhatisAmdahlsLaw?):
-
-	![](img/ahmdahls.png), donde _S(n)_ es el mejoramiento teórico del desempeño, _P_ la fracción paralelizable del algoritmo, y _n_ el número de hilos, a mayor _n_, mayor debería ser dicha mejora. Por qué el mejor desempeño no se logra con los 500 hilos?, cómo se compara este desempeño cuando se usan 200?. 
-
-2. Cómo se comporta la solución usando tantos hilos de procesamiento como núcleos comparado con el resultado de usar el doble de éste?.
-
-3. De acuerdo con lo anterior, si para este problema en lugar de 100 hilos en una sola CPU se pudiera usar 1 hilo en cada una de 100 máquinas hipotéticas, la ley de Amdahls se aplicaría mejor?. Si en lugar de esto se usaran c hilos en 100/c máquinas distribuidas (siendo c es el número de núcleos de dichas máquinas), se mejoraría?. Explique su respuesta.
-
-
+En esta caso casi no se ve reflejado debido a que se implemento que los hilos se terminen cuando encuentren 5 ocurrencias. Es decir no se dejan ejecutando los hilos sino se detienen.
 
