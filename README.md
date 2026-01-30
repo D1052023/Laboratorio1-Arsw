@@ -125,6 +125,7 @@ A partir de lo anterior, implemente la siguiente secuencia de experimentos para 
 
  ![](img/resultadoExperimento4.png)
 5. 100 hilos.
+
  ![](img/experimento5.png)
 
  ![](img/resultadoExperimento5.png)
