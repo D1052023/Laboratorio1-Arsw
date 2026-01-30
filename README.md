@@ -26,6 +26,9 @@
 	Al reemplazar start() por run(), la ejecución deja de ser concurrente.
 	Con start() los hilos se ejecutan en paralelo y la salida es no determinística, es decir sin seguir un orden especifico.
 	Con run() el código se ejecuta de manera secuencial en el hilo principal, produciendo una salida ordenada.
+	![](img/codigo1.png)
+	![](img/codigo2.png)
+	![](img/prueba.png)
 
 **Parte II - Ejercicio Black List Search**
 
@@ -101,6 +104,12 @@ Ahora:
 
 	- consistencia de datos
 
+**Evidencia**
+
+![](img/codigo3.png)
+![](img/codigo4.png)
+![](img/codigo5.png)
+![](img/prueba2.png)		
 **Parte III - Evaluación de Desempeño**
 
 A partir de lo anterior, implemente la siguiente secuencia de experimentos para realizar las validación de direcciones IP dispersas (por ejemplo 202.24.34.55), tomando los tiempos de ejecución de los mismos (asegúrese de hacerlos en la misma máquina):
